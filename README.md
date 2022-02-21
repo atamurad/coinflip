@@ -4,6 +4,10 @@ This is the Python implementation of the [Blum coin-flipping protocol.](https://
 
 ### Sample run
 
+```
+pip3 install -r requirements.txt
+```
+
 **Bob**:
 ```
 $ python3 bob.py
@@ -24,4 +28,11 @@ x = 90806192710269355608557082872437065203797177274
 Outcome = Tails
 ```
 
+## Let's flip some coins!
+
+My coin-flipping number is 1001566002234152341231810327395747847813363152601. It's publication date is Feb 21, 2022. 
+
+To proceed with the protocol, you are welcome to open Issue here or tweet me at @atamyrat.
+
+Bonus points if you can flip all coins heads up.
 
