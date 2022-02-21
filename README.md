@@ -1,7 +1,6 @@
-# [Bloom '81] Coin Flipping by Telephone
-## A Protocol for Solving impossible problems 
+# [Blum '81] Coin Flipping by Telephone
 
-This is the Python implementation of the [Bloom coin-flipping protocol.](https://www.cs.cmu.edu/~mblum/research/pdf/coin/)
+This is the Python implementation of the [Blum coin-flipping protocol.](https://www.cs.cmu.edu/~mblum/research/pdf/coin/)
 
 ### Sample run
 
