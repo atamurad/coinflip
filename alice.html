@@ -1,0 +1,137 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>coin flip</title>
+
+<script language="JavaScript" type="text/javascript" src="jsbn/jsbn.js"></script>
+<script language="JavaScript" type="text/javascript" src="jsbn/jsbn2.js"></script>
+<script language="JavaScript" type="text/javascript" src="jsbn/prng4.js"></script>
+<script language="JavaScript" type="text/javascript" src="jsbn/rng.js"></script>
+
+
+<script language="JavaScript">
+
+
+/* This code is from https://github.com/San-Jeevan/Jacobi_Symbol_with_Big_Integers */
+function jacobi(a){
+  var b = new Object(); b[0] = 1; b[1] = 1; b[2] = 1; 
+  var sign = a[0];
+  var m = a[1];
+  var n = a[2];
+  if( sign > 0 ) console.log("("+m.toString()+"/"+n.toString()+") = ");
+  if( sign < 0 ) console.log("-("+m.toString()+"/"+n.toString()+") = ");
+  if( m > n.subtract(BigInteger.ONE) ) {
+    m = m.divideAndRemainder(n)[1];
+    if( sign > 0 ) console.log("("+m.toString()+"/"+n.toString()+") = ");
+    if( sign < 0 ) console.log("-("+m.toString()+"/"+n.toString()+") = ");
+  }
+   m = m.divideAndRemainder(n)[1];
+  if( m == 0 ){
+    console.log("0");
+    return 0;
+  }
+  if( m == 1 ) {
+    if( sign > 0 ) { console.log("1"); return 1; }
+    console.log("-1"); return -1;
+  }
+  var J2n = BigInteger.ONE;
+  if( (3 == (n.divideAndRemainder(new BigInteger("8"))[1])) || (5 == (n.divideAndRemainder(new BigInteger("8"))[1])) ) J2n = BigInteger.ONE.negate();
+  if( 0 == (m.divideAndRemainder(new BigInteger("2"))[1]) ) {
+    b[0] = sign.multiply(J2n);
+    b[1] = m.divide(new BigInteger("2"));
+    b[2] = n;
+    return jacobi(b);
+  }
+  if( (3 == (n.divideAndRemainder(new BigInteger("4"))[1])) && (3 == (m.divideAndRemainder(new BigInteger("4"))[1])) ) {
+    b[0] = sign.negate();
+    b[1] = n.divideAndRemainder(m)[1];
+    b[2] = m;
+    return jacobi(b);
+  } else { 
+    b[0] = sign;
+    b[1] = n.divideAndRemainder(m)[1];
+    b[2] = m;
+    return jacobi(b); 
+  }
+}
+
+var J = null;
+
+function getx2()
+    {
+        var random = new Array(20);
+        new SecureRandom().nextBytes(random);
+        // set the sign bit to 0, we only want positive numbers
+        random[0] = random[0] & 0x7f;
+
+        var N = new BigInteger(document.getElementById("N").value);
+        var x = new BigInteger(random, 256).remainder(N);
+        // x^2 mod N
+        var x2 = x.square().remainder(N);
+
+	    var input = new Object(); 
+        input[0] = BigInteger.ONE; 
+        input[1] = x; 
+        input[2] = N;
+
+        J = jacobi(input);
+
+        document.getElementById('x').value = x;
+        document.getElementById('x2').value = x2;
+        document.getElementById('J_guess').value = "";
+        document.getElementById('step2').style.visibility = "visible";
+        document.getElementById('step3').style.visibility = "hidden";
+    }
+
+function getoutcome()
+{
+        var J_guess = document.getElementById('J_guess').value;
+
+        if(J_guess != "-1" && J_guess != "1") {
+                alert('Jacobian symbol guess should be 1 or -1');
+                return;
+        }
+
+        var outcome = (J_guess == J)
+
+        document.getElementById('outcome').value = outcome ? "Heads" : "Tails";
+
+        document.getElementById('step3').style.visibility = "visible";
+}
+
+		
+</script>
+</head>
+
+<body >
+    <h1>Blum Coin Flip Protocol - Alice</h1>
+
+    <div id="step1">
+        <b>Step 1.</b><br/>
+
+        N ?
+        <input name="N" type="text" id="N" value="" size="70"> <br/>
+        <input type="submit" onClick="getx2();" id="btn_step1" value="Next..">
+    </div>
+
+    <div id="step2" style="visibility: hidden;">
+        <b>Step 2.</b><br/>
+        x^2:
+        <input readonly name="x^2" type="text" id="x2" value="" size="70"> <br/>
+
+        Jacobian symbol guess?
+        <input name="J_guess" type="text" id="J_guess" value="" size="70"> <br/>
+
+        <input type="submit" onClick="getoutcome();" id="btn_step2" value="Next..">
+    </div>
+
+    <div id="step3" style="visibility: hidden;">
+        <b>Step 3.</b><br/>
+        x:
+        <input readonly name="x" type="text" id="x" value="" size="70"> <br/>
+
+        Outcome:
+        <input readonly name="outcome" type="text" id="outcome" value="" size="70">
+    </div>
+</body>
+</html>
